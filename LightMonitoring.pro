@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,10 +11,13 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    settings.cpp
 
 HEADERS += \
-    mainwindow.h
+    DefaultSettings.h \
+    mainwindow.h \
+    settings.h
 
 FORMS += \
     mainwindow.ui
