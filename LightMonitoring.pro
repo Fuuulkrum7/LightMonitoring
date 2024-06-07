@@ -1,5 +1,6 @@
 QT       += core gui
 QT       += xml
+QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,9 +22,6 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
-
-#TRANSLATIONS += \
-#    LightMonitoring_en_US.ts
 
 TRANSLATIONS += \
     translations/LightMonitoring_ru.ts \

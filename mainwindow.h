@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QLocale>
+#include <QSerialPort>
 #include <QTranslator>
+
 #include "settings.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,7 +19,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -27,9 +29,13 @@ private slots:
     void updateLuxValue(float lux);
 
 private:
+    void readData();
+    void writeData(const QByteArray &data);
+
     Ui::MainWindow *ui;
 
     std::shared_ptr<Settings> settings;
+    QSerialPort *port;
     QTranslator translator;
     QLocale currentLocale;
     void changeLanguage(const QString &languageCode);
