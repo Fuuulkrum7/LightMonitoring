@@ -36,8 +36,8 @@ void Settings::writeSettings(QFile* fileXML) {
 
     stream.writeStartElement(START_ELEMENT);
 
-    stream.writeTextElement(LOW_BORDER, QString::number(LOW_BORDER_VALUE));
-    stream.writeTextElement(HIGH_BORDER, QString::number(HIGH_BORDER_VALUE));
+    stream.writeTextElement(LOW_BORDER, QString::number(this->lowBorder));
+    stream.writeTextElement(HIGH_BORDER, QString::number(this->highBorder));
 
     stream.writeEndElement();
     stream.writeEndDocument();

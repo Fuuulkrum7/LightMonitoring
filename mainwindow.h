@@ -21,6 +21,9 @@ public:
 
 private slots:
     void on_comboBox_currentIndexChanged(int index);
+    void on_lowBorderChanged();
+    void on_highBorderChanged();
+    void updateLuxValue(float lux);
 
 private:
     Ui::MainWindow *ui;
@@ -28,5 +31,6 @@ private:
     std::shared_ptr<Settings> settings;
     QTranslator translator;
     void changeLanguage(const QString &languageCode);
+    void updateLabelColor();
 };
 #endif // MAINWINDOW_H

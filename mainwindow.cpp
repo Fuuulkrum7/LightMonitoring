@@ -10,6 +10,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     settings = Settings::getInstance();
+
+    // Установка начальных значений из настроек
+    ui->lineEdit_2->setText(QString::number(settings->getLowBorder()));
+    ui->lineEdit->setText(QString::number(settings->getHighBorder()));
+
+    // Подключение сигналов
+    connect(ui->lineEdit_2, &QLineEdit::editingFinished, this, &MainWindow::on_lowBorderChanged);
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::on_highBorderChanged);
+
+    updateLabelColor();
 }
 
 MainWindow::~MainWindow()
@@ -54,5 +64,51 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     }
     changeLanguage(languageCode);
     qDebug() << languageCode;
+}
+
+void MainWindow::on_lowBorderChanged()
+{
+    bool ok;
+    float lowBorder = ui->lineEdit_2->text().toFloat(&ok);
+    if (ok && settings->setLowBorder(lowBorder)) {
+        settings->writeSettings();
+        qDebug() << "Low border set to" << lowBorder;
+        updateLabelColor();
+    } else {
+        qDebug() << "Failed to set low border";
+    }
+}
+
+void MainWindow::on_highBorderChanged()
+{
+    bool ok;
+    float highBorder = ui->lineEdit->text().toFloat(&ok);
+    if (ok && settings->setHighBorder(highBorder)) {
+        settings->writeSettings();
+        qDebug() << "High border set to" << highBorder;
+        qDebug() << settings->getHighBorder();
+        updateLabelColor();
+    } else {
+        qDebug() << "Failed to set high border";
+    }
+}
+
+void MainWindow::updateLuxValue(float lux)
+{
+    QString luxText = QString::number(lux, 'f', 2);
+    ui->label->setText(luxText);
+    updateLabelColor();
+}
+
+void MainWindow::updateLabelColor()
+{
+    float lux = ui->label->text().toFloat();
+    if (lux < settings->getLowBorder()) {
+        ui->label->setStyleSheet("QLabel { color : blue; }");
+    } else if (lux > settings->getHighBorder()) {
+        ui->label->setStyleSheet("QLabel { color : red; }");
+    } else {
+        ui->label->setStyleSheet("QLabel { color : green; }");
+    }
 }
 
