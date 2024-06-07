@@ -20,15 +20,10 @@ std::shared_ptr<Settings> Settings::getInstance() {
 void Settings::writeSettings() {
     QFile fileXML(QDir::currentPath() + "/" + SETTINGS_FOLDER + "/" + SETTINGS_NAME);
 
-    writeSettings(&fileXML);
+    fileXML.open(QFile::WriteOnly);
 
-    fileXML.close();
-}
+    QXmlStreamWriter stream(&fileXML);
 
-void Settings::writeSettings(QFile* fileXML) {
-    fileXML->open(QFile::WriteOnly);
-
-    QXmlStreamWriter stream(fileXML);
     stream.setAutoFormatting(true);
     stream.setAutoFormattingIndent(2);
 
@@ -36,11 +31,13 @@ void Settings::writeSettings(QFile* fileXML) {
 
     stream.writeStartElement(START_ELEMENT);
 
-    stream.writeTextElement(LOW_BORDER, QString::number(LOW_BORDER_VALUE));
-    stream.writeTextElement(HIGH_BORDER, QString::number(HIGH_BORDER_VALUE));
+    stream.writeTextElement(LOW_BORDER, QString::number(lowBorder));
+    stream.writeTextElement(HIGH_BORDER, QString::number(highBorder));
 
     stream.writeEndElement();
     stream.writeEndDocument();
+
+    fileXML.close();
 }
 
 bool Settings::loadSettings() {
@@ -82,10 +79,8 @@ bool Settings::loadSettings() {
     }
     else
     {
-        // make note, that we create file
+        // make note, that we has no file
         existed = false;
-        // write it
-        writeSettings(&fileXML);
         // set default values
         lowBorder = LOW_BORDER_VALUE;
         highBorder = HIGH_BORDER_VALUE;

@@ -24,7 +24,6 @@ public:
 protected:
     Settings() = default;
     bool loadSettings();
-    void writeSettings(QFile* file);
 private:
     float lowBorder = 0;
     float highBorder = 0;
