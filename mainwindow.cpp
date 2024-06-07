@@ -9,13 +9,11 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow),
-    port(new QSerialPort(this))
+    , ui(new Ui::MainWindow)
+    , port(new QSerialPort(this))
 {
     ui->setupUi(this);
     settings = Settings::getInstance();
-
-    ui->setupUi(this);
     port->setPortName("COM3");
     port->setBaudRate(9600);
     port->setDataBits(QSerialPort::Data8);
