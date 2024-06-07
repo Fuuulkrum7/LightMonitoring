@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLocale>
 #include <QTranslator>
 #include "settings.h"
 
@@ -30,7 +31,9 @@ private:
 
     std::shared_ptr<Settings> settings;
     QTranslator translator;
+    QLocale currentLocale;
     void changeLanguage(const QString &languageCode);
     void updateLabelColor();
+    void updateNumberFormats();
 };
 #endif // MAINWINDOW_H

@@ -12,14 +12,18 @@ MainWindow::MainWindow(QWidget *parent)
     settings = Settings::getInstance();
 
     // Установка начальных значений из настроек
-    ui->lineEdit_2->setText(QString::number(settings->getLowBorder()));
-    ui->lineEdit->setText(QString::number(settings->getHighBorder()));
+    ui->lineEdit_2->setText(currentLocale.toString(settings->getLowBorder(), 'f', 2));
+    ui->lineEdit->setText(currentLocale.toString(settings->getHighBorder(), 'f', 2));
 
     // Подключение сигналов
     connect(ui->lineEdit_2, &QLineEdit::editingFinished, this, &MainWindow::on_lowBorderChanged);
     connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::on_highBorderChanged);
 
+    // Установка начальной локали
+    currentLocale = QLocale::system();
+
     updateLabelColor();
+    updateNumberFormats();
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +47,17 @@ void MainWindow::changeLanguage(const QString &languageCode) {
     }
     else
         qDebug() << "not success";
+
+    // Установка локали на основе языка
+    if (languageCode == "ru") {
+        currentLocale = QLocale(QLocale::Russian);
+    } else if (languageCode == "en") {
+        currentLocale = QLocale(QLocale::English);
+    } else if (languageCode == "de") {
+        currentLocale = QLocale(QLocale::German);
+    }
+
+    updateNumberFormats();
 }
 
 void MainWindow::on_comboBox_currentIndexChanged(int index)
@@ -69,40 +84,48 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 void MainWindow::on_lowBorderChanged()
 {
     bool ok;
-    float lowBorder = ui->lineEdit_2->text().toFloat(&ok);
+    QString text = ui->lineEdit_2->text();
+    float lowBorder = currentLocale.toFloat(text, &ok);
+    qDebug() << "Trying to set low border with text:" << text << ", converted to float:" << lowBorder;
     if (ok && settings->setLowBorder(lowBorder)) {
         settings->writeSettings();
         qDebug() << "Low border set to" << lowBorder;
-        updateLabelColor();
     } else {
-        qDebug() << "Failed to set low border";
+        qDebug() << "Failed to set low border with text:" << text;
     }
+    updateLabelColor();
+    //updateNumberFormats();
 }
 
 void MainWindow::on_highBorderChanged()
 {
     bool ok;
-    float highBorder = ui->lineEdit->text().toFloat(&ok);
+    QString text = ui->lineEdit->text();
+    float highBorder = currentLocale.toFloat(text, &ok);
+    qDebug() << "Trying to set high border with text:" << text << ", converted to float:" << highBorder;
     if (ok && settings->setHighBorder(highBorder)) {
         settings->writeSettings();
         qDebug() << "High border set to" << highBorder;
-        qDebug() << settings->getHighBorder();
-        updateLabelColor();
     } else {
-        qDebug() << "Failed to set high border";
+        qDebug() << "Failed to set high border with text:" << text;
     }
+    updateLabelColor();
+    //updateNumberFormats();
 }
 
 void MainWindow::updateLuxValue(float lux)
 {
-    QString luxText = QString::number(lux, 'f', 2);
-    ui->label->setText(luxText);
-    updateLabelColor();
+    // QString luxText = currentLocale.toString(lux, 'f', 2);
+    // ui->label->setText(luxText);
+    // updateLabelColor();
+    0;
 }
 
 void MainWindow::updateLabelColor()
 {
-    float lux = ui->label->text().toFloat();
+    qDebug() << ui->label->text();
+    float lux = currentLocale.toFloat(ui->label->text());
+    qDebug() << lux;
     if (lux < settings->getLowBorder()) {
         ui->label->setStyleSheet("QLabel { color : blue; }");
     } else if (lux > settings->getHighBorder()) {
@@ -110,5 +133,14 @@ void MainWindow::updateLabelColor()
     } else {
         ui->label->setStyleSheet("QLabel { color : green; }");
     }
+    qDebug() << ui->label->text();
+}
+
+void MainWindow::updateNumberFormats()
+{
+    ui->lineEdit_2->setText(currentLocale.toString(settings->getLowBorder(), 'f', 2));
+    ui->lineEdit->setText(currentLocale.toString(settings->getHighBorder(), 'f', 2));
+    ui->label->setText(currentLocale.toString(ui->label->text().toFloat(), 'f', 2));
+    qDebug() << ui->label->text();
 }
 
