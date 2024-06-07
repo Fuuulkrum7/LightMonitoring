@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSerialPort>
+#include <QTranslator>
 
 #include "settings.h"
 
@@ -20,6 +21,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_comboBox_currentIndexChanged(int index);
+    void on_lowBorderChanged();
+    void on_highBorderChanged();
+    void updateLuxValue(float lux);
+
 private:
     void readData();
     void writeData(const QByteArray &data);
@@ -28,5 +35,8 @@ private:
 
     std::shared_ptr<Settings> settings;
     QSerialPort *port;
+    QTranslator translator;
+    void changeLanguage(const QString &languageCode);
+    void updateLabelColor();
 };
 #endif // MAINWINDOW_H

@@ -23,8 +23,14 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+#TRANSLATIONS += \
+#    LightMonitoring_en_US.ts
+
 TRANSLATIONS += \
-    LightMonitoring_en_US.ts
+    translations/LightMonitoring_ru.ts \
+    translations/LightMonitoring_en.ts \
+    translations/LightMonitoring_de.ts
+
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -32,3 +38,8 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    translations/LightMonitoring_de.qm \
+    translations/LightMonitoring_en.qm \
+    translations/LightMonitoring_ru.qm
