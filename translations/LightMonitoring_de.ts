@@ -26,21 +26,17 @@
     <message>
         <location filename="../mainwindow.ui" line="85"/>
         <source>Нижняя граница</source>
-        <translation>Unterkante</translation>
+        <translation>Untere Grenze</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="112"/>
         <source>Верхняя граница</source>
-        <translation>Obergrenze</translation>
+        <translation>Ober Grenze</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="146"/>
-        <source>5.5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Привет</source>
-        <translation type="vanished">Hallo</translation>
+        <source>Освещённость</source>
+        <translation>Lichtverhältnisse</translation>
     </message>
 </context>
 </TS>

@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     settings = Settings::getInstance();
-    port->setPortName("COM3");
+    port->setPortName("COM1");
     port->setBaudRate(9600);
     port->setDataBits(QSerialPort::Data8);
     port->setParity(QSerialPort::NoParity);
@@ -46,8 +46,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::readData() {
     QByteArray data = port->readAll();
-    // TODO here can be added read
     updateLuxValue(255u - qFromLittleEndian<qint16>(data.data()));
+    //qDebug() << 255u - qFromLittleEndian<qint16>(data.data());
 }
 
 void MainWindow::writeData(const QByteArray &data) {
@@ -64,12 +64,9 @@ void MainWindow::changeLanguage(const QString &languageCode) {
     if (targetIndex != -1)
         resultPath = currentPath.left(targetIndex + targetFolder.length());
     if (translator.load(resultPath + "/translations/LightMonitoring_" + languageCode + ".qm")) {
-        qDebug() << "success";
         QCoreApplication::installTranslator(&translator);
         ui->retranslateUi(this);  // Обновить UI для перевода
     }
-    else
-        qDebug() << "not success";
 
     // Установка локали на основе языка
     if (languageCode == "ru") {
@@ -101,7 +98,7 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
         break;
     }
     changeLanguage(languageCode);
-    qDebug() << languageCode;
+    qDebug() << "Switched to " << languageCode;
 }
 
 void MainWindow::on_lowBorderChanged()
@@ -115,6 +112,7 @@ void MainWindow::on_lowBorderChanged()
         qDebug() << "Low border set to" << lowBorder;
     } else {
         qDebug() << "Failed to set low border with text:" << text;
+        ui->lineEdit_2->setText(currentLocale.toString(settings->getLowBorder(), 'f', 2));
     }
     updateLabelColor();
     //updateNumberFormats();
@@ -131,6 +129,7 @@ void MainWindow::on_highBorderChanged()
         qDebug() << "High border set to" << highBorder;
     } else {
         qDebug() << "Failed to set high border with text:" << text;
+        ui->lineEdit->setText(currentLocale.toString(settings->getHighBorder(), 'f', 2));
     }
     updateLabelColor();
     //updateNumberFormats();
@@ -138,17 +137,14 @@ void MainWindow::on_highBorderChanged()
 
 void MainWindow::updateLuxValue(float lux)
 {
-    // QString luxText = currentLocale.toString(lux, 'f', 2);
-    // ui->label->setText(luxText);
-    // updateLabelColor();
-    0;
+    QString luxText = currentLocale.toString(lux, 'f', 2);
+    ui->label->setText(luxText);
+    updateLabelColor();
 }
 
 void MainWindow::updateLabelColor()
 {
-    qDebug() << ui->label->text();
     float lux = currentLocale.toFloat(ui->label->text());
-    qDebug() << lux;
     if (lux < settings->getLowBorder()) {
         ui->label->setStyleSheet("QLabel { color : blue; }");
     } else if (lux > settings->getHighBorder()) {
@@ -156,7 +152,6 @@ void MainWindow::updateLabelColor()
     } else {
         ui->label->setStyleSheet("QLabel { color : green; }");
     }
-    qDebug() << ui->label->text();
 }
 
 void MainWindow::updateNumberFormats()
@@ -164,6 +159,5 @@ void MainWindow::updateNumberFormats()
     ui->lineEdit_2->setText(currentLocale.toString(settings->getLowBorder(), 'f', 2));
     ui->lineEdit->setText(currentLocale.toString(settings->getHighBorder(), 'f', 2));
     ui->label->setText(currentLocale.toString(ui->label->text().toFloat(), 'f', 2));
-    qDebug() << ui->label->text();
 }
 

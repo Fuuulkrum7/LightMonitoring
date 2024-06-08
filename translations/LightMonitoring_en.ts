@@ -35,12 +35,8 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="146"/>
-        <source>5.5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Привет</source>
-        <translation type="vanished">Hello</translation>
+        <source>Освещённость</source>
+        <translation>Lightness</translation>
     </message>
 </context>
 </TS>
