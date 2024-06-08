@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <vector>
+#include <algorithm>
 #include <QIODevice>
 #include <QtEndian>
 #include <QDebug>
@@ -46,7 +47,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::readData() {
     QByteArray data = port->readAll();
-    updateLuxValue(255u - qFromLittleEndian<qint16>(data.data()));
+    ValueConverter converter;
+    updateLuxValue(converter.convert(qFromLittleEndian<qint16>(data.data())));
     //qDebug() << 255u - qFromLittleEndian<qint16>(data.data());
 }
 
