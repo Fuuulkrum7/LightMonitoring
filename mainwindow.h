@@ -42,6 +42,8 @@ private:
     void updateLabelColor();
     void updateNumberFormats();
 };
+
+
 class ValueConverter {
 private:
     std::vector<std::pair<int, int>> valuePairs;

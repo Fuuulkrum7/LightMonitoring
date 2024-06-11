@@ -34,6 +34,9 @@ void Settings::writeSettings() {
     stream.writeTextElement(LOW_BORDER, QString::number(lowBorder));
     stream.writeTextElement(HIGH_BORDER, QString::number(highBorder));
 
+    stream.writeTextElement(WIDTH, QString::number(width));
+    stream.writeTextElement(HEIGHT, QString::number(height));
+
     stream.writeEndElement();
     stream.writeEndDocument();
 
@@ -50,6 +53,14 @@ bool Settings::loadSettings() {
     if (!existed)  {
         QDir().mkdir(path);
     }
+
+    // set default values
+    lowBorder  = LOW_BORDER_VALUE;
+    highBorder = HIGH_BORDER_VALUE;
+
+    // window params by default
+    width  = WIDTH_VALUE;
+    height = HEIGHT_VALUE;
 
     // when file is not empty, read it
     if (fileXML.size() > 0)
@@ -72,6 +83,12 @@ bool Settings::loadSettings() {
             if (data.tagName() == HIGH_BORDER) {
                 highBorder = data.firstChild().nodeValue().toFloat();
             }
+            if (data.tagName() == WIDTH) {
+                width = data.firstChild().nodeValue().toFloat();
+            }
+            if (data.tagName() == HEIGHT) {
+                height = data.firstChild().nodeValue().toFloat();
+            }
 
             // got to next value
             data = data.nextSiblingElement();
@@ -81,9 +98,6 @@ bool Settings::loadSettings() {
     {
         // make note, that we has no file
         existed = false;
-        // set default values
-        lowBorder = LOW_BORDER_VALUE;
-        highBorder = HIGH_BORDER_VALUE;
     }
     // in any case close file
     fileXML.close();
@@ -115,4 +129,22 @@ bool Settings::setLowBorder(float newBorder) {
 
     lowBorder = newBorder;
     return true;
+}
+
+
+uint16_t Settings::getWidth() const {
+    return width;
+}
+
+uint16_t Settings::getHeight() const {
+    return height;
+}
+
+
+void Settings::setWidth(uint16_t newValue) {
+    width = newValue;
+}
+
+void Settings::setHeight(uint16_t newValue) {
+    height = newValue;
 }

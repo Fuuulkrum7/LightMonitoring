@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include <vector>
 #include <algorithm>
 #include <QIODevice>
@@ -13,8 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , port(new QSerialPort(this))
 {
-    ui->setupUi(this);
     settings = Settings::getInstance();
+    ui->setupUi(this);
+
     port->setPortName("COM1");
     port->setBaudRate(9600);
     port->setDataBits(QSerialPort::Data8);
@@ -41,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    settings->setHeight(this->height());
+    settings->setWidth(this->width());
+
     settings->writeSettings();
     delete ui;
 }
