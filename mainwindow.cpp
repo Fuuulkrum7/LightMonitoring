@@ -39,10 +39,28 @@ MainWindow::MainWindow(QWidget *parent)
     currentLocale = QLocale::system();
 
     updateLabelColor();
-    updateNumberFormats();
+
+    // get curr lang
+    const auto &lang = settings->getLanguage();
+    // TODO this can be used, if we don't want to use list in .ui file
+
+    // when setting values to this comboBox, first would be set
+    // as a chosen one. So, we need to set values first
+    // ui->comboBox->addItems(settings->languagesAllowedNames);
+    // set current language
+    ui->comboBox->setCurrentIndex(
+        settings->languagesAllowed.indexOf(
+            lang
+        )
+    );
+
 }
 
 MainWindow::~MainWindow() {
+    // save window pos
+    settings->setPosX(this->mapToGlobal(this->pos()).x());
+    settings->setPosY(this->mapToGlobal(this->pos()).y());
+
     settings->setHeight(this->height());
     settings->setWidth(this->width());
 
@@ -54,7 +72,6 @@ void MainWindow::readData() {
     QByteArray data = port->readAll();
     ValueConverter converter;
     updateLuxValue(converter.convert(qFromLittleEndian<qint16>(data.data())));
-    //qDebug() << 255u - qFromLittleEndian<qint16>(data.data());
 }
 
 void MainWindow::writeData(const QByteArray &data) {
@@ -68,20 +85,26 @@ void MainWindow::changeLanguage(const QString &languageCode) {
     QString resultPath;
 
     int targetIndex = currentPath.indexOf(targetFolder);
-    if (targetIndex != -1)
+
+    // TODO maybe add sth what should be done, when folder is not found?
+    if (targetIndex != -1) {
         resultPath = currentPath.left(targetIndex + targetFolder.length());
+    }
+
     if (translator.load(resultPath + "/translations/LightMonitoring_" + languageCode + ".qm")) {
         QCoreApplication::installTranslator(&translator);
         ui->retranslateUi(this);  // Обновить UI для перевода
     }
 
     // Установка локали на основе языка
-    if (languageCode == "ru") {
-        currentLocale = QLocale(QLocale::Russian);
-    } else if (languageCode == "en") {
+    if (languageCode == "en") {
         currentLocale = QLocale(QLocale::English);
-    } else if (languageCode == "de") {
+    }
+    else if (languageCode == "de") {
         currentLocale = QLocale(QLocale::German);
+    }
+    else {
+        currentLocale = QLocale(QLocale::Russian);
     }
 
     updateNumberFormats();
@@ -89,22 +112,11 @@ void MainWindow::changeLanguage(const QString &languageCode) {
 
 void MainWindow::on_comboBox_currentIndexChanged(int index)
 {
-    QString languageCode;
-    switch (index) {
-    case 0:
-        languageCode = "ru";
-        break;
-    case 1:
-        languageCode = "en";
-        break;
-    case 2:
-        languageCode = "de";
-        break;
-    default:
-        languageCode = "ru";
-        break;
-    }
+    QString languageCode = index > 2 ? "ru" : settings->languagesAllowed[index];
+
     changeLanguage(languageCode);
+    settings->setLanguage(languageCode);
+
     qDebug() << "Switched to " << languageCode;
 }
 
@@ -113,7 +125,9 @@ void MainWindow::on_lowBorderChanged()
     bool ok;
     QString text = ui->lineEdit_2->text();
     float lowBorder = currentLocale.toFloat(text, &ok);
+
     qDebug() << "Trying to set low border with text:" << text << ", converted to float:" << lowBorder;
+
     if (ok && settings->setLowBorder(lowBorder)) {
         settings->writeSettings();
         qDebug() << "Low border set to" << lowBorder;
@@ -121,8 +135,8 @@ void MainWindow::on_lowBorderChanged()
         qDebug() << "Failed to set low border with text:" << text;
         ui->lineEdit_2->setText(currentLocale.toString(settings->getLowBorder(), 'f', 2));
     }
+
     updateLabelColor();
-    //updateNumberFormats();
 }
 
 void MainWindow::on_highBorderChanged()
@@ -130,7 +144,9 @@ void MainWindow::on_highBorderChanged()
     bool ok;
     QString text = ui->lineEdit->text();
     float highBorder = currentLocale.toFloat(text, &ok);
+
     qDebug() << "Trying to set high border with text:" << text << ", converted to float:" << highBorder;
+
     if (ok && settings->setHighBorder(highBorder)) {
         settings->writeSettings();
         qDebug() << "High border set to" << highBorder;
@@ -138,8 +154,8 @@ void MainWindow::on_highBorderChanged()
         qDebug() << "Failed to set high border with text:" << text;
         ui->lineEdit->setText(currentLocale.toString(settings->getHighBorder(), 'f', 2));
     }
+
     updateLabelColor();
-    //updateNumberFormats();
 }
 
 void MainWindow::updateLuxValue(float lux)

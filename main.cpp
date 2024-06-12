@@ -4,6 +4,8 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QScreen>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +13,17 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     auto settings = Settings::getInstance();
-    w.resize(settings->getWidth(), settings->getHeight());
+
+    if (settings->hasOldFile()) {
+        //  set window geometry, coords and size of window
+        w.setGeometry(
+            settings->getPosX() / 2,
+            settings->getPosY() / 2,
+            settings->getWidth(),
+            settings->getHeight()
+        );
+    }
+
     w.show();
 
     return a.exec();

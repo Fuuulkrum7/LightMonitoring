@@ -41,6 +41,7 @@ private:
     void changeLanguage(const QString &languageCode);
     void updateLabelColor();
     void updateNumberFormats();
+
 };
 
 

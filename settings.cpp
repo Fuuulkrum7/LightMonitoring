@@ -37,30 +37,39 @@ void Settings::writeSettings() {
     stream.writeTextElement(WIDTH, QString::number(width));
     stream.writeTextElement(HEIGHT, QString::number(height));
 
+    stream.writeTextElement(LANGUAGE, language);
+
+    stream.writeTextElement(POS_X, QString::number(posX));
+    stream.writeTextElement(POS_Y, QString::number(posY));
+    qDebug() << posX;
+
     stream.writeEndElement();
     stream.writeEndDocument();
 
     fileXML.close();
 }
 
-bool Settings::loadSettings() {
+void Settings::loadSettings() {
     auto path = QDir::currentPath() + "/" + SETTINGS_FOLDER;
 
-    bool existed = QDir(path).exists();
+    oldFile = QDir(path).exists();
     QFile fileXML(path + "/" + SETTINGS_NAME);
 
     // if there is not directory for settings file, create it
-    if (!existed)  {
+    if (!oldFile)  {
         QDir().mkdir(path);
     }
 
-    // set default values
+    // set default values for borders
     lowBorder  = LOW_BORDER_VALUE;
     highBorder = HIGH_BORDER_VALUE;
 
     // window params by default
     width  = WIDTH_VALUE;
     height = HEIGHT_VALUE;
+
+    // default lang
+    language = LANGUAGE_VALUE;
 
     // when file is not empty, read it
     if (fileXML.size() > 0)
@@ -80,14 +89,23 @@ bool Settings::loadSettings() {
             if (data.tagName() == LOW_BORDER) {
                 lowBorder = data.firstChild().nodeValue().toFloat();
             }
-            if (data.tagName() == HIGH_BORDER) {
+            else if (data.tagName() == HIGH_BORDER) {
                 highBorder = data.firstChild().nodeValue().toFloat();
             }
-            if (data.tagName() == WIDTH) {
+            else if (data.tagName() == WIDTH) {
                 width = data.firstChild().nodeValue().toFloat();
             }
-            if (data.tagName() == HEIGHT) {
+            else if (data.tagName() == HEIGHT) {
                 height = data.firstChild().nodeValue().toFloat();
+            }
+            else if (data.tagName() == LANGUAGE) {
+                language = data.firstChild().nodeValue();
+            }
+            else if (data.tagName() == POS_X) {
+                posX = data.firstChild().nodeValue().toFloat();
+            }
+            else if (data.tagName() == POS_Y) {
+                posY = data.firstChild().nodeValue().toFloat();
             }
 
             // got to next value
@@ -97,12 +115,11 @@ bool Settings::loadSettings() {
     else
     {
         // make note, that we has no file
-        existed = false;
+        oldFile = false;
     }
+
     // in any case close file
     fileXML.close();
-
-    return existed;
 }
 
 float Settings::getHighBorder() const  {
@@ -131,6 +148,9 @@ bool Settings::setLowBorder(float newBorder) {
     return true;
 }
 
+bool Settings::hasOldFile() const {
+    return oldFile;
+}
 
 uint16_t Settings::getWidth() const {
     return width;
@@ -147,4 +167,30 @@ void Settings::setWidth(uint16_t newValue) {
 
 void Settings::setHeight(uint16_t newValue) {
     height = newValue;
+}
+
+uint16_t Settings::getPosX() const {
+    return posX;
+}
+
+uint16_t Settings::getPosY() const {
+    return posY;
+}
+
+
+void Settings::setPosX(uint16_t newValue) {
+    posX = newValue;
+}
+
+void Settings::setPosY(uint16_t newValue) {
+    posY = newValue;
+}
+
+
+QString Settings::getLanguage() const {
+    return language;
+}
+
+void Settings::setLanguage(const QString &language) {
+    this->language = language;
 }
