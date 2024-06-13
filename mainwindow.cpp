@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // get curr lang
     const auto &lang = settings->getLanguage();
+    changeLanguage(lang);
     // TODO this can be used, if we don't want to use list in .ui file
 
     // when setting values to this comboBox, first would be set
