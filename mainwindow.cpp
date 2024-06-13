@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-MainWindow::~MainWindow() {
+void MainWindow::writeSettings() {
     // save window pos
     settings->setPosX(this->mapToGlobal(this->pos()).x());
     settings->setPosY(this->mapToGlobal(this->pos()).y());
@@ -65,6 +65,10 @@ MainWindow::~MainWindow() {
     settings->setWidth(this->width());
 
     settings->writeSettings();
+}
+
+MainWindow::~MainWindow() {
+    writeSettings();
     delete ui;
 }
 

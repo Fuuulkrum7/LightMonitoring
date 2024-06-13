@@ -4,26 +4,26 @@
 #include <QString>
 #include <cstdint>
 
-static const QString SETTINGS_NAME = ".settings.xml";
-static const QString SETTINGS_FOLDER = ".settings";
+inline const QString SETTINGS_NAME = ".settings.xml";
+inline const QString SETTINGS_FOLDER = ".settings";
 
-static const QString START_ELEMENT = "settings";
+inline const QString START_ELEMENT = "settings";
 
 // names of elements
-static const QString LOW_BORDER = "low_border";
-static const QString HIGH_BORDER = "high_border";
-static const QString WIDTH = "width";
-static const QString HEIGHT = "height";
-static const QString POS_X = "pos_x";
-static const QString POS_Y = "pos_y";
-static const QString LANGUAGE = "language";
+inline const QString LOW_BORDER = "low_border";
+inline const QString HIGH_BORDER = "high_border";
+inline const QString WIDTH = "width";
+inline const QString HEIGHT = "height";
+inline const QString POS_X = "pos_x";
+inline const QString POS_Y = "pos_y";
+inline const QString LANGUAGE = "language";
 
-static const float LOW_BORDER_VALUE = 0;
-static const float HIGH_BORDER_VALUE = 100;
+inline const float LOW_BORDER_VALUE = 0;
+inline const float HIGH_BORDER_VALUE = 100;
 
-static const uint16_t WIDTH_VALUE = 720;
-static const uint16_t HEIGHT_VALUE = 480;
+inline const uint16_t WIDTH_VALUE = 720;
+inline const uint16_t HEIGHT_VALUE = 480;
 
-static const QString LANGUAGE_VALUE = "ru";
+inline const QString LANGUAGE_VALUE = "ru";
 
 #endif // DEFAULTSETTINGS_H

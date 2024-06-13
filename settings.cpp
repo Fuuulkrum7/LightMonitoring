@@ -41,7 +41,6 @@ void Settings::writeSettings() {
 
     stream.writeTextElement(POS_X, QString::number(posX));
     stream.writeTextElement(POS_Y, QString::number(posY));
-    qDebug() << posX;
 
     stream.writeEndElement();
     stream.writeEndDocument();

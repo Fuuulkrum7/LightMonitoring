@@ -15,10 +15,11 @@ int main(int argc, char *argv[])
     auto settings = Settings::getInstance();
 
     if (settings->hasOldFile()) {
+        auto geometry = QApplication::primaryScreen()->geometry();
         //  set window geometry, coords and size of window
         w.setGeometry(
-            settings->getPosX() / 2,
-            settings->getPosY() / 2,
+            (settings->getPosX() / 2) % geometry.width(),
+            (settings->getPosY() / 2) % geometry.height(),
             settings->getWidth(),
             settings->getHeight()
         );

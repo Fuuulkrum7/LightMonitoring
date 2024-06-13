@@ -29,6 +29,7 @@ private slots:
     void updateLuxValue(float lux);
 
 private:
+    void writeSettings();
     void readData();
     void writeData(const QByteArray &data);
 
