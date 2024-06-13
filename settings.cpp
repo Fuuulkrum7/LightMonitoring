@@ -17,8 +17,16 @@ std::shared_ptr<Settings> Settings::getInstance() {
     return singleton;
 }
 
+QString getCurDir(const QString &path) {
+    QDir dir = QDir(path);
+    dir.cdUp();
+    dir.cdUp();
+
+    return dir.absolutePath();
+}
+
 void Settings::writeSettings() {
-    QFile fileXML(QDir::currentPath() + "/" + SETTINGS_FOLDER + "/" + SETTINGS_NAME);
+    QFile fileXML(getCurDir(QDir::currentPath()) + "/" + SETTINGS_FOLDER + "/" + SETTINGS_NAME);
 
     fileXML.open(QFile::WriteOnly);
 
@@ -48,8 +56,8 @@ void Settings::writeSettings() {
     fileXML.close();
 }
 
-void Settings::loadSettings() {
-    auto path = QDir::currentPath() + "/" + SETTINGS_FOLDER;
+void Settings::loadSettings() {;
+    auto path = getCurDir(QDir::currentPath()) + "/" + SETTINGS_FOLDER;
 
     oldFile = QDir(path).exists();
     QFile fileXML(path + "/" + SETTINGS_NAME);
